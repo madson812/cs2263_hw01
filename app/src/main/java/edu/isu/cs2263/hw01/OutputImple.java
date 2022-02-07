@@ -1,5 +1,9 @@
 package edu.isu.cs2263.hw01;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * This object is used for outputting the solution to the input expression.
  * 
@@ -27,6 +31,10 @@ public class OutputImple implements OutputFace{
     @Override
     public void output(String expr, int result) {
         System.out.println("The result of the expression " + expr + " is " + result + "\n");
+    }
+
+    public void output(String expr, int result, FileWriter writer) throws IOException {
+        writer.write("The result of the expression " + expr + " is " + result + "\n");
     }
 
 }

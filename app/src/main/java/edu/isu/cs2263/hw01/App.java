@@ -7,6 +7,8 @@ import org.apache.commons.cli.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -18,7 +20,7 @@ import java.util.Scanner;
  */
 public class App {
 
-    public static void main(String[] args) throws ParseException, FileNotFoundException {
+    public static void main(String[] args) throws ParseException, IOException {
         Options options = new Options();
 
         options.addOption("h", false, "prints help/usage message");
@@ -50,24 +52,42 @@ public class App {
             try {
                 File file = new File(args[1]);
                 InputImple in = new InputImple(new Scanner(file));
+
+                OutputImple out = new OutputImple();
+                ExpressionEvaluator eval = new ExpressionEvaluator();
+                String expr = "";
+                while (expr != null)
+                    try{
+                        expr = in.getInput();
+                        out.output(expr, eval.evaluate(expr));
+                    } catch (java.lang.NullPointerException ignored) {
+
+                    }
             }catch (java.io.FileNotFoundException e){
                 System.out.println("Invalid Filename.");
             }
-            OutputImple out = new OutputImple();
-            ExpressionEvaluator eval = new ExpressionEvaluator();
-            String expr = "";
-            while (expr != null)
-                try{
-                    expr = in.getInput();
-                    out.output(expr, eval.evaluate(expr));
-                } catch (java.lang.NullPointerException ignored) {
-
-                }
             }
+
 
         //The -o option is for outputting to another file.
         else if(cmd.hasOption("o")){
             System.out.println("Output value: "+args[1]);
+            try {
+                FileWriter writer = new FileWriter(args[1]);
+                InputImple in = new InputImple(new Scanner(System.in));
+                OutputImple out = new OutputImple();
+                ExpressionEvaluator eval = new ExpressionEvaluator();
+                String expr;
+                while (true) {
+                    System.out.println("Input an expression:");
+                    expr = in.getInput();
+                    out.output(expr, eval.evaluate(expr), writer);
+                    out.output(expr, eval.evaluate(expr));
+                    writer.flush();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
         }
 
         //If none of the other options are used, it is assumed to be used from the command line.
