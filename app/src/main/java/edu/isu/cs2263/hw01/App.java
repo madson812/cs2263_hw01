@@ -10,6 +10,12 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * The App class. This is where everything happens. All CLI options are here since they seem to throw an error anywhere else.
+ * Everything related to them is here as well for the same reason.
+ *
+ * @author Grant Madson
+ */
 public class App {
 
     public static void main(String[] args) throws ParseException, FileNotFoundException {
@@ -34,13 +40,47 @@ public class App {
                                   Copyright (C) 2022 Grant Madson""");
         }
 
-        if(cmd.hasOption("b")){
-            System.out.println("Batch value: " + args[1]);
+        //The -b option is for inputting a file with the arguments.
+        else if(cmd.hasOption("b")) {
+            try {
+                System.out.println("Batch value: " + args[1]);
+            }catch(java.lang.ArrayIndexOutOfBoundsException e){
+                System.out.println("Please enter a file name.");
+            }
+            try {
+                File file = new File(args[1]);
+                InputImple in = new InputImple(new Scanner(file));
+            }catch (java.io.FileNotFoundException e){
+                System.out.println("Invalid Filename.");
+            }
+            OutputImple out = new OutputImple();
+            ExpressionEvaluator eval = new ExpressionEvaluator();
+            String expr = "";
+            while (expr != null)
+                try{
+                    expr = in.getInput();
+                    out.output(expr, eval.evaluate(expr));
+                } catch (java.lang.NullPointerException ignored) {
 
+                }
             }
 
-        if(cmd.hasOption("o")){
+        //The -o option is for outputting to another file.
+        else if(cmd.hasOption("o")){
             System.out.println("Output value: "+args[1]);
+        }
+
+        //If none of the other options are used, it is assumed to be used from the command line.
+        else {
+            InputImple in = new InputImple(new Scanner(System.in));
+            OutputImple out = new OutputImple();
+            ExpressionEvaluator eval = new ExpressionEvaluator();
+            String expr;
+            while(true){
+                System.out.println("Input an expression:");
+                expr = in.getInput();
+                out.output(expr, eval.evaluate(expr));
+            }
         }
     }
 }
