@@ -35,3 +35,16 @@ none
 
 ### Removed
 * none
+
+
+## [1.2.0] - 2022-02-06
+### Added
+* Output to file feature
+
+### Changed
+* Changelog
+* App
+* OutputImple
+
+### Removed
+* none
